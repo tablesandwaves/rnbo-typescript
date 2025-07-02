@@ -1,4 +1,4 @@
-import { createDevice, MIDIEvent, MIDIData } from "@rnbo/js";
+import { createDevice, MIDIEvent, type Device, type MIDIData } from "@rnbo/js";
 
 
 const patcherExportURL = "export/simple-fm.export.json",
@@ -42,10 +42,10 @@ async function setup() {
 }
 
 
-function makeSliders(device) {
+function makeSliders(device: Device) {
   // This will allow us to ignore parameter update events while dragging the slider.
   // let isDraggingSlider = false;
-  let uiElements = {};
+  let uiElements: any = {};
 
   device.parameters.forEach(param => {
     let slider = generateSlider(param);
@@ -99,7 +99,7 @@ const watchParameterChanges = (param: any, slider: HTMLInputElement, text: HTMLI
 }
 
 
-const generateLabel = (param) => {
+const generateLabel = (param: any) => {
   const label = document.createElement("label");
 
   label.setAttribute("name", param.name);
@@ -111,7 +111,7 @@ const generateLabel = (param) => {
 }
 
 
-const generateSlider = (param) => {
+const generateSlider = (param: any) => {
   const slider = document.createElement("input");
 
   slider.setAttribute("type", "range");
@@ -131,7 +131,7 @@ const generateSlider = (param) => {
 }
 
 
-const generateParameterText = (param) => {
+const generateParameterText = (param: any) => {
   let text = document.createElement("input");
 
   text.setAttribute("value", param.value.toFixed(1));
@@ -141,21 +141,21 @@ const generateParameterText = (param) => {
 }
 
 
-function loadPresets(device, patcher) {
-  let presets = patcher.presets || [];
+function loadPresets(device: Device, patcher: any) {
+  let presets: any = patcher.presets || [];
 
   let presetSelect = document.getElementById("preset-select") as HTMLSelectElement;
-  presets.forEach((preset, index) => {
+  presets.forEach((preset: any, index: number) => {
     const option = document.createElement("option");
     option.innerText = preset.name;
-    option.value = index;
+    option.value = "" + index;
     presetSelect!.appendChild(option);
   });
   presetSelect!.onchange = () => device.setPreset(presets[presetSelect!.value].preset);
 }
 
 
-function makeMIDIKeyboard(device) {
+function makeMIDIKeyboard(device: Device) {
   midiNotes.forEach(midiNoteNumber => {
     const key = document.createElement("div");
     const label = document.createElement("p");
