@@ -9,6 +9,8 @@ const patcherExportURL = "export/simple-fm.export.json",
       midiOffVelocity  = 100,
       noteDurationMs   = 1000;
 
+let isDraggingSlider = false;
+
 
 async function setup() {
   // Create the audio context, gain node and connect them
@@ -42,7 +44,7 @@ async function setup() {
 
 function makeSliders(device) {
   // This will allow us to ignore parameter update events while dragging the slider.
-  let isDraggingSlider = false;
+  // let isDraggingSlider = false;
   let uiElements = {};
 
   device.parameters.forEach(param => {
@@ -53,29 +55,7 @@ function makeSliders(device) {
     sliderContainer.appendChild(slider);
     sliderContainer.appendChild(text);
 
-    // Make each slider control its parameter
-    slider.addEventListener("pointerdown", () => isDraggingSlider = true);
-    slider.addEventListener("pointerup", () => {
-      isDraggingSlider = false;
-      slider.value = param.value;
-      text.value = param.value.toFixed(1);
-    });
-    slider.addEventListener("input", () => param.value = Number.parseFloat(slider.value));
-
-    // Make the text box input control the parameter value as well
-    text.addEventListener("keydown", (ev) => {
-      if (ev.key === "Enter") {
-        let newValue = Number.parseFloat(text.value);
-        if (isNaN(newValue)) {
-          text.value = param.value;
-        } else {
-          newValue = Math.min(newValue, param.max);
-          newValue = Math.max(newValue, param.min);
-          text.value = "" + newValue;
-          param.value = newValue;
-        }
-      }
-    });
+    watchParameterChanges(param, slider, text);
 
     // Store the slider and text by name so we can access them later
     uiElements[param.id] = { slider, text };
@@ -88,6 +68,33 @@ function makeSliders(device) {
   device.parameterChangeEvent.subscribe(param => {
     if (!isDraggingSlider) uiElements[param.id].slider.value = param.value;
     uiElements[param.id].text.value = param.value.toFixed(1);
+  });
+}
+
+
+const watchParameterChanges = (param: any, slider: HTMLInputElement, text: HTMLInputElement) => {
+  // Make each slider control its parameter
+  slider.addEventListener("pointerdown", () => isDraggingSlider = true);
+  slider.addEventListener("pointerup", () => {
+    isDraggingSlider = false;
+    slider.value = param.value;
+    text.value = param.value.toFixed(1);
+  });
+  slider.addEventListener("input", () => param.value = Number.parseFloat(slider.value));
+
+  // Make the text box input control the parameter value as well
+  text.addEventListener("keydown", (ev) => {
+    if (ev.key === "Enter") {
+      let newValue = Number.parseFloat(text.value);
+      if (isNaN(newValue)) {
+        text.value = param.value;
+      } else {
+        newValue = Math.min(newValue, param.max);
+        newValue = Math.max(newValue, param.min);
+        text.value = "" + newValue;
+        param.value = newValue;
+      }
+    }
   });
 }
 
