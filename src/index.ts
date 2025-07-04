@@ -43,10 +43,10 @@ const makeSliders = (device: Device, index: number) => {
   let uiElements: any = {};
 
   device.parameters.forEach(param => {
-    let slider = generateSlider(param);
-    let text   = generateParameterText(param);
+    let slider = generateSlider(param, index);
+    let text   = generateParameterText(param, index);
     let sliderContainer = document.createElement("div");
-    sliderContainer.appendChild(generateLabel(param));
+    sliderContainer.appendChild(generateLabel(param, index));
     sliderContainer.appendChild(slider);
     sliderContainer.appendChild(text);
 
@@ -94,11 +94,10 @@ const watchParameterChanges = (param: Parameter, slider: HTMLInputElement, text:
 }
 
 
-const generateLabel = (param: Parameter) => {
+const generateLabel = (param: Parameter, index: number) => {
   const label = document.createElement("label");
 
-  label.setAttribute("name", param.name);
-  label.setAttribute("for", param.name);
+  label.setAttribute("for", `synth-${index}-${param.name}-slider`);
   label.setAttribute("class", "param-label");
   label.textContent = `${param.name}: `;
 
@@ -106,13 +105,13 @@ const generateLabel = (param: Parameter) => {
 }
 
 
-const generateSlider = (param: Parameter) => {
+const generateSlider = (param: Parameter, index: number) => {
   const slider = document.createElement("input");
 
   slider.setAttribute("type", "range");
   slider.setAttribute("class", "param-slider");
-  slider.setAttribute("id", param.id);
-  slider.setAttribute("name", param.name);
+  slider.setAttribute("id", `synth-${index}-${param.id}-slider`);
+  slider.setAttribute("name", `synth-${index}-${param.name}-slider`);
   slider.setAttribute("min", "" + param.min);
   slider.setAttribute("max", "" + param.max);
   if (param.steps > 1) {
@@ -126,9 +125,10 @@ const generateSlider = (param: Parameter) => {
 }
 
 
-const generateParameterText = (param: Parameter) => {
+const generateParameterText = (param: Parameter, index: number) => {
   let text = document.createElement("input");
 
+  text.setAttribute("name", `synth-${index}-${param.name}-text`)
   text.setAttribute("value", param.value.toFixed(1));
   text.setAttribute("type", "text");
 
