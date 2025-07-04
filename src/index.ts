@@ -1,4 +1,4 @@
-import { createDevice, MIDIEvent, type Device, type MIDIData } from "@rnbo/js";
+import { createDevice, MIDIEvent, type Device, type MIDIData, type IPatcher, type Parameter } from "@rnbo/js";
 
 
 const patcherExportURL = "export/simple-fm.export.json",
@@ -12,7 +12,7 @@ const patcherExportURL = "export/simple-fm.export.json",
 let isDraggingSlider = false;
 
 
-async function setup() {
+const setup = async () => {
   // Create the audio context, gain node and connect them
   const context: AudioContext = new AudioContext();
   const outputNode = context.createGain();
@@ -20,7 +20,7 @@ async function setup() {
 
   // Create the device and then connect it to the web audio graph
   let response = await fetch(patcherExportURL);
-  let patcher  = await response.json();
+  let patcher  = await response.json() as IPatcher;
   const device = await createDevice({ patcher, context });
   device.node.connect(outputNode);
 
@@ -42,7 +42,7 @@ async function setup() {
 }
 
 
-function makeSliders(device: Device) {
+const makeSliders = (device: Device) => {
   // This will allow us to ignore parameter update events while dragging the slider.
   // let isDraggingSlider = false;
   let uiElements: any = {};
@@ -72,12 +72,12 @@ function makeSliders(device: Device) {
 }
 
 
-const watchParameterChanges = (param: any, slider: HTMLInputElement, text: HTMLInputElement) => {
+const watchParameterChanges = (param: Parameter, slider: HTMLInputElement, text: HTMLInputElement) => {
   // Make each slider control its parameter
   slider.addEventListener("pointerdown", () => isDraggingSlider = true);
   slider.addEventListener("pointerup", () => {
     isDraggingSlider = false;
-    slider.value = param.value;
+    slider.value = "" + param.value;
     text.value = param.value.toFixed(1);
   });
   slider.addEventListener("input", () => param.value = Number.parseFloat(slider.value));
@@ -87,7 +87,7 @@ const watchParameterChanges = (param: any, slider: HTMLInputElement, text: HTMLI
     if (ev.key === "Enter") {
       let newValue = Number.parseFloat(text.value);
       if (isNaN(newValue)) {
-        text.value = param.value;
+        text.value = "" + param.value;
       } else {
         newValue = Math.min(newValue, param.max);
         newValue = Math.max(newValue, param.min);
@@ -99,7 +99,7 @@ const watchParameterChanges = (param: any, slider: HTMLInputElement, text: HTMLI
 }
 
 
-const generateLabel = (param: any) => {
+const generateLabel = (param: Parameter) => {
   const label = document.createElement("label");
 
   label.setAttribute("name", param.name);
@@ -111,27 +111,27 @@ const generateLabel = (param: any) => {
 }
 
 
-const generateSlider = (param: any) => {
+const generateSlider = (param: Parameter) => {
   const slider = document.createElement("input");
 
   slider.setAttribute("type", "range");
   slider.setAttribute("class", "param-slider");
   slider.setAttribute("id", param.id);
   slider.setAttribute("name", param.name);
-  slider.setAttribute("min", param.min);
-  slider.setAttribute("max", param.max);
+  slider.setAttribute("min", "" + param.min);
+  slider.setAttribute("max", "" + param.max);
   if (param.steps > 1) {
-      slider.setAttribute("step", `${(param.max - param.min) / (param.steps - 1)}`);
+    slider.setAttribute("step", `${(param.max - param.min) / (param.steps - 1)}`);
   } else {
-      slider.setAttribute("step", `${(param.max - param.min) / 1000.0}`);
+    slider.setAttribute("step", `${(param.max - param.min) / 1000.0}`);
   }
-  slider.setAttribute("value", param.value);
+  slider.setAttribute("value", "" + param.value);
 
   return slider;
 }
 
 
-const generateParameterText = (param: any) => {
+const generateParameterText = (param: Parameter) => {
   let text = document.createElement("input");
 
   text.setAttribute("value", param.value.toFixed(1));
@@ -141,7 +141,7 @@ const generateParameterText = (param: any) => {
 }
 
 
-function loadPresets(device: Device, patcher: any) {
+const loadPresets = (device: Device, patcher: IPatcher) => {
   let presets: any = patcher.presets || [];
 
   let presetSelect = document.getElementById("preset-select") as HTMLSelectElement;
@@ -155,7 +155,7 @@ function loadPresets(device: Device, patcher: any) {
 }
 
 
-function makeMIDIKeyboard(device: Device) {
+const makeMIDIKeyboard = (device: Device) => {
   midiNotes.forEach(midiNoteNumber => {
     const key = document.createElement("div");
     const label = document.createElement("p");
@@ -184,5 +184,6 @@ function makeMIDIKeyboard(device: Device) {
     document.getElementById("rnbo-clickable-keyboard")!.appendChild(key);
   });
 }
+
 
 setup();
