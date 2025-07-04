@@ -4,23 +4,34 @@ html, body {
     padding: 0;
 }
 
-#rnbo-root {
-    height: 100vh;
-    width: 100vw;
+#wrapper {
     margin: auto;
-    max-width: 540px;
+    max-width: 1080px;
+}
+
+.synth {
+    width: 530px;
+    float: left;
+}
+
+#synth-0 {
+    margin-right: 10px;
+}
+
+#synth-1 {
+    margin-left: 10px;
 }
 
 h2, em {
     width: 100%;
 }
 
-#rnbo-clickable-keyboard {
+.rnbo-clickable-keyboard {
     display: flex;
     flex-wrap: wrap;
 }
 
-#rnbo-clickable-keyboard > div {
+.rnbo-clickable-keyboard > div {
     margin: 2px;
     border: solid black 1px;
     min-height: 50px;
@@ -30,20 +41,20 @@ h2, em {
     align-items: center;
 }
 
-#rnbo-clickable-keyboard > div.clicked {
+.rnbo-clickable-keyboard > div.clicked {
     background: #222222;
     color: #dddddd;
 }
 
-#rnbo-parameter-sliders {
+.rnbo-parameter-sliders {
     display: flex;
     flex-direction: column;
 }
 
-#rnbo-parameter-sliders > div {
+.rnbo-parameter-sliders > div {
     display: flex;
 }
 
-#rnbo-parameter-sliders > div > input:first-of-type {
+.rnbo-parameter-sliders > div > input:first-of-type {
     flex-grow: 1;
 }

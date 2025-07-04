@@ -19,22 +19,17 @@ const setup = async () => {
   outputNode.connect(context.destination);
 
   // Create the device and then connect it to the web audio graph
-  let response = await fetch(patcherExportURL);
-  let patcher  = await response.json() as IPatcher;
-  const device = await createDevice({ patcher, context });
-  device.node.connect(outputNode);
+  let response  = await fetch(patcherExportURL);
+  let patcher   = await response.json() as IPatcher;
+  const device1 = await createDevice({ patcher, context });
+  const device2 = await createDevice({ patcher, context });
 
-  // (Optional) Extract the name and rnbo version of the patcher from the description
-  document.getElementById("patcher-title")!.innerText = patcher.desc.meta.filename + " (v" + patcher.desc.meta.rnboversion + ")";
+  [device1, device2].forEach((device, i) => {
+    device.node.connect(outputNode);
 
-  // (Optional) Automatically create sliders for the device parameters
-  makeSliders(device);
-
-  // (Optional) Load presets, if any
-  loadPresets(device, patcher);
-
-  // (Optional) Connect MIDI inputs
-  makeMIDIKeyboard(device);
+    makeSliders(device, i);
+    makeMIDIKeyboard(device, i);
+  });
 
   document.body.onclick = () => {
     context.resume();
@@ -42,7 +37,7 @@ const setup = async () => {
 }
 
 
-const makeSliders = (device: Device) => {
+const makeSliders = (device: Device, index: number) => {
   // This will allow us to ignore parameter update events while dragging the slider.
   // let isDraggingSlider = false;
   let uiElements: any = {};
@@ -61,7 +56,7 @@ const makeSliders = (device: Device) => {
     uiElements[param.id] = { slider, text };
 
     // Add the slider element
-    document.getElementById("rnbo-parameter-sliders")!.appendChild(sliderContainer);
+    document.querySelector(`#synth-${index} .rnbo-parameter-sliders`)!.appendChild(sliderContainer);
   });
 
   // Listen to parameter changes from the device
@@ -141,21 +136,7 @@ const generateParameterText = (param: Parameter) => {
 }
 
 
-const loadPresets = (device: Device, patcher: IPatcher) => {
-  let presets: any = patcher.presets || [];
-
-  let presetSelect = document.getElementById("preset-select") as HTMLSelectElement;
-  presets.forEach((preset: any, index: number) => {
-    const option = document.createElement("option");
-    option.innerText = preset.name;
-    option.value = "" + index;
-    presetSelect!.appendChild(option);
-  });
-  presetSelect!.onchange = () => device.setPreset(presets[presetSelect!.value].preset);
-}
-
-
-const makeMIDIKeyboard = (device: Device) => {
+const makeMIDIKeyboard = (device: Device, index: number) => {
   midiNotes.forEach(midiNoteNumber => {
     const key = document.createElement("div");
     const label = document.createElement("p");
@@ -181,7 +162,7 @@ const makeMIDIKeyboard = (device: Device) => {
 
     key.addEventListener("pointerup", () => key.classList.remove("clicked"));
 
-    document.getElementById("rnbo-clickable-keyboard")!.appendChild(key);
+    document.querySelector(`#synth-${index} .rnbo-clickable-keyboard`)!.appendChild(key);
   });
 }
 

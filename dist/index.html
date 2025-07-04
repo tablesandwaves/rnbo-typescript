@@ -2,27 +2,33 @@
 <html lang="en">
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-  <meta name="theme-color" content="#000000">
   <link rel="stylesheet" href="css/style.css">
   <link rel="shortcut icon" type="image/x-icon" href="images/favicon.ico">
   <title>RNBO with Typescript</title>
 </head>
 <body>
 
-<div id="rnbo-root">
+<div id="wrapper">
   <div>
-    <h1 id="patcher-title">Unnamed patcher</h1>
+    <h1 id="patcher-title">RNBO Simple FM Duet</h1>
   </div>
-  <div id="rnbo-clickable-keyboard">
-    <h2>MIDI Keyboard</h2>
+
+  <div id="synth-0" class="synth">
+    <div class="rnbo-clickable-keyboard">
+      <h2>MIDI Keyboard</h2>
+    </div>
+    <div class="rnbo-parameter-sliders">
+      <h2>Parameters</h2>
+    </div>
   </div>
-  <div id="rnbo-presets">
-    <h2>Presets</h2>
-    <select id="preset-select"></select>
-  </div>
-  <div id="rnbo-parameter-sliders">
-    <h2>Parameters</h2>
+
+  <div id="synth-1" class="synth">
+    <div class="rnbo-clickable-keyboard">
+      <h2>MIDI Keyboard</h2>
+    </div>
+    <div class="rnbo-parameter-sliders">
+      <h2>Parameters</h2>
+    </div>
   </div>
 </div>
 
