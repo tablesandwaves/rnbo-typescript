@@ -3,6 +3,9 @@
  * https://github.com/mdn/webaudio-examples/tree/main/step-sequencer
  */
 
+import { type Device } from "@rnbo/js";
+import { playNote } from "./playback";
+
 
 type queuedNote = {
   note: number,
@@ -11,8 +14,8 @@ type queuedNote = {
 
 
 export class StepSequencer {
-  audioCtx: AudioContext;
-  tempo = 160;
+  audioContext: AudioContext;
+  tempo = 120;
   // How frequently to call scheduling function (in milliseconds)
   lookahead = 25.0;
   // How far ahead to schedule audio (sec)
@@ -31,11 +34,13 @@ export class StepSequencer {
   // TODO: change to dynamic count of HTML .pads > input[type="checkbox"] elements.
   lastNoteDrawn = 3;
   isPlaying = false;
+  devices: Device[] = [];
 
 
-  constructor(audioCtx: AudioContext) {
-    this.audioCtx = audioCtx;
-    this.pads = document.querySelectorAll(".pads");
+  constructor(audioContext: AudioContext, devices: Device[]) {
+    this.audioContext = audioContext;
+    this.devices      = devices;
+    this.pads         = document.querySelectorAll(".pads");
   }
 
 
@@ -55,9 +60,13 @@ export class StepSequencer {
 
     if (this.pads[0]!.querySelectorAll("input")![beatNumber]!.checked) {
       // Play first voice
+      const midiNoteNumber = Math.floor(Math.random() * 12) + 48;
+      playNote(this.devices[0]!, midiNoteNumber);
     }
     if (this.pads[1]!.querySelectorAll("input")![beatNumber]!.checked) {
       // Play second voice
+      const midiNoteNumber = Math.floor(Math.random() * 12) + 48;
+      playNote(this.devices[1]!, midiNoteNumber);
     }
   }
 
@@ -65,7 +74,7 @@ export class StepSequencer {
   // While there are notes that will need to play before the next interval,
   // schedule them and advance the pointer.
   scheduler(sequencer: StepSequencer) {
-    while (sequencer.nextNoteTime < sequencer.audioCtx.currentTime + sequencer.scheduleAheadTime) {
+    while (sequencer.nextNoteTime < sequencer.audioContext.currentTime + sequencer.scheduleAheadTime) {
       sequencer.scheduleNote(sequencer.currentNote, sequencer.nextNoteTime);
       sequencer.nextNote();
     }
@@ -79,7 +88,7 @@ export class StepSequencer {
   // This is a loop: it reschedules itself to redraw at the end.
   draw(sequencer: StepSequencer) {
     let drawNote = sequencer.lastNoteDrawn;
-    const currentTime = sequencer.audioCtx.currentTime;
+    const currentTime = sequencer.audioContext.currentTime;
 
     while (sequencer.notesInQueue.length && sequencer.notesInQueue[0]!.time < currentTime) {
       drawNote = sequencer.notesInQueue[0]!.note;
@@ -108,12 +117,12 @@ export class StepSequencer {
     // Start playing
     if (this.isPlaying) {
       // Check if context is in suspended state (autoplay policy)
-      if (this.audioCtx.state === "suspended") {
-        this.audioCtx.resume();
+      if (this.audioContext.state === "suspended") {
+        this.audioContext.resume();
       }
 
       this.currentNote = 0;
-      this.nextNoteTime = this.audioCtx.currentTime;
+      this.nextNoteTime = this.audioContext.currentTime;
       this.scheduler(this); // kick off scheduling
       requestAnimationFrame(() => this.draw(this)); // start the drawing loop.
       (event.target as Element).setAttribute("data-playing", "true");

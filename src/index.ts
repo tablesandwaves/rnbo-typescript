@@ -1,20 +1,19 @@
-import { createDevice, MIDIEvent, type Device, type MIDIData, type IPatcher, type Parameter } from "@rnbo/js";
+import { createDevice, type Device, type IPatcher, type Parameter } from "@rnbo/js";
 import { StepSequencer } from "./sequencer";
+import { playNote } from "./playback";
+
+
+type SetupResponse = [context: AudioContext, devices: Device[]];
 
 
 const patcherExportURL = "export/simple-fm.export.json",
-      midiNotes        = [49, 52, 56, 63],
-      midiPort         = 0,
-      midiChannel      = 0,
-      midiOnVelocity   = 100,
-      midiOffVelocity  = 100,
-      noteDurationMs   = 1000;
+      midiNotes        = [49, 52, 56, 63];
 
 let isDraggingSlider = false,
     sequencer: StepSequencer;
 
 
-const setup = async () => {
+const setup = async (): Promise<SetupResponse> => {
   // Create the audio context, gain node and connect them
   const context: AudioContext = new AudioContext();
   const outputNode = context.createGain();
@@ -37,7 +36,7 @@ const setup = async () => {
     context.resume();
   }
 
-  return context;
+  return [context, [device1, device2]];
 }
 
 
@@ -147,34 +146,21 @@ const makeMIDIKeyboard = (device: Device, index: number) => {
     label.textContent = "" + midiNoteNumber;
     key.appendChild(label);
     key.addEventListener("pointerdown", () => {
-      // Format a MIDI message paylaod, this constructs a MIDI on event
-      // Code for a note on: 10010000 & midi channel (0-15)
-      // Code for a note off: 10000000 & midi channel (0-15)
-      let noteOnMessage:  MIDIData = [144 + midiChannel, midiNoteNumber, midiOnVelocity];
-      let noteOffMessage: MIDIData = [128 + midiChannel, midiNoteNumber, midiOffVelocity];
-
-      // When scheduling an event to occur in the future, use the current audio context time
-      // multiplied by 1000 (converting seconds to milliseconds) for now.
-      let noteOnEvent  = new MIDIEvent(device.context.currentTime * 1000, midiPort, noteOnMessage);
-      let noteOffEvent = new MIDIEvent(device.context.currentTime * 1000 + noteDurationMs, midiPort, noteOffMessage);
-
-      device.scheduleEvent(noteOnEvent);
-      device.scheduleEvent(noteOffEvent);
-
+      playNote(device, midiNoteNumber);
       key.classList.add("clicked");
     });
 
     key.addEventListener("pointerup", () => key.classList.remove("clicked"));
-
     document.querySelector(`#synth-${index} .rnbo-clickable-keyboard`)!.appendChild(key);
   });
 }
 
 
-setup().then(context => {
-  sequencer = new StepSequencer(context);
-
-  document.querySelector("#playBtn")!.addEventListener("click", (event) => {
-    sequencer.togglePlayback(event);
+setup()
+  .then((contextAndDevices: SetupResponse) => {
+    const [context, devices] = contextAndDevices;
+    sequencer = new StepSequencer(context, devices);
+    document.querySelector("#playBtn")!.addEventListener("click", (event) => sequencer.togglePlayback(event));
+  }).catch(error => {
+    console.error(error.message);
   });
-});
