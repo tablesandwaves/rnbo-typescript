@@ -58,3 +58,17 @@ h2, em {
 .rnbo-parameter-sliders > div > input:first-of-type {
     flex-grow: 1;
 }
+
+.rnbo-parameter-sliders input[type="text"] {
+    width: 30px;
+}
+
+.rnbo-parameter-sliders input[type="range"] {
+    width: 380px;
+    margin: auto 10px;
+}
+
+.rnbo-parameter-sliders label {
+    width: 100px;
+    text-align: right;
+}
