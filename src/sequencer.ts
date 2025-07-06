@@ -4,7 +4,7 @@
  */
 
 import { type Device } from "@rnbo/js";
-import { playNote } from "./playback";
+import { playNote, updateParameters } from "./playback";
 
 
 type queuedNote = {
@@ -15,7 +15,7 @@ type queuedNote = {
 
 export class StepSequencer {
   audioContext: AudioContext;
-  tempo = 120;
+  tempo = 240;
   // How frequently to call scheduling function (in milliseconds)
   lookahead = 25.0;
   // How far ahead to schedule audio (sec)
@@ -26,14 +26,17 @@ export class StepSequencer {
   nextNoteTime = 0.0;
   // UI elements that correspond to sequencer steps
   pads: NodeListOf<Element>;
-  // Create a queue for the notes that are to be played,
-  // with the current time that we want them to play:
+  // Create a queue for the notes that are to be played, with the current time that we want them to play
   notesInQueue: queuedNote[] = [];
+  // ID for clearing setTimeout() when sequencer stops
   timerID: NodeJS.Timeout | undefined;
   // Start at last note drawn so first time used it wraps back to index 0
   lastNoteDrawn: number;
+  // Number of steps in the loop
   stepCount: number;
+  // Keep track of play status
   isPlaying = false;
+  // RNBO synth devices
   devices: Device[] = [];
 
 
@@ -62,11 +65,16 @@ export class StepSequencer {
 
     if (this.pads[0]!.querySelectorAll("input")![beatNumber]!.checked) {
       // Play first voice
+      if (Math.random() > 0.5)
+        updateParameters(this.devices[0]!);
       const midiNoteNumber = Math.floor(Math.random() * 12) + 48;
       playNote(this.devices[0]!, midiNoteNumber);
     }
+
     if (this.pads[1]!.querySelectorAll("input")![beatNumber]!.checked) {
       // Play second voice
+      if (Math.random() > 0.5)
+        updateParameters(this.devices[1]!);
       const midiNoteNumber = Math.floor(Math.random() * 12) + 48;
       playNote(this.devices[1]!, midiNoteNumber);
     }

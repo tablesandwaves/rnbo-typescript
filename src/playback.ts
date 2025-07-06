@@ -1,11 +1,11 @@
-import { MIDIEvent, type Device, type MIDIData } from "@rnbo/js";
+import { MIDIEvent, TimeNow, type Device, type MIDIData } from "@rnbo/js";
 
 
 const midiPort         = 0,
       midiChannel      = 0,
       midiOnVelocity   = 100,
       midiOffVelocity  = 100,
-      noteDurationMs   = 1000;
+      noteDurationMs   = 250;
 
 
 export const playNote = (device: Device, midiNoteNumber: number) => {
@@ -19,4 +19,11 @@ export const playNote = (device: Device, midiNoteNumber: number) => {
 
   device.scheduleEvent(noteOnEvent);
   device.scheduleEvent(noteOffEvent);
+}
+
+
+export const updateParameters = (device: Device) => {
+  device.parametersById.get("modulator")!.value = Math.round(Math.random() * 100) / 10;
+  device.parametersById.get("carrier")!.value   = Math.round(Math.random() * 100) / 10;
+  device.parametersById.get("index")!.value     = Math.round(Math.random() * 200) / 10;
 }
