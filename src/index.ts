@@ -1,4 +1,5 @@
 import { createDevice, MIDIEvent, type Device, type MIDIData, type IPatcher, type Parameter } from "@rnbo/js";
+import { StepSequencer } from "./sequencer";
 
 
 const patcherExportURL = "export/simple-fm.export.json",
@@ -9,7 +10,8 @@ const patcherExportURL = "export/simple-fm.export.json",
       midiOffVelocity  = 100,
       noteDurationMs   = 1000;
 
-let isDraggingSlider = false;
+let isDraggingSlider = false,
+    sequencer: StepSequencer;
 
 
 const setup = async () => {
@@ -34,6 +36,8 @@ const setup = async () => {
   document.body.onclick = () => {
     context.resume();
   }
+
+  return context;
 }
 
 
@@ -167,4 +171,10 @@ const makeMIDIKeyboard = (device: Device, index: number) => {
 }
 
 
-setup();
+setup().then(context => {
+  sequencer = new StepSequencer(context);
+
+  document.querySelector("#playBtn")!.addEventListener("click", (event) => {
+    sequencer.togglePlayback(event);
+  });
+});
