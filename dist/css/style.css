@@ -15,8 +15,8 @@
   --boxMain: var(--pink);
   --boxSecond: var(--purple);
   --boxHigh: var(--yellow);
-  --border: 1vmin solid var(--black);
-  --borderRad: 2px;
+  --border: 3px solid var(--black);
+  --borderRad: 4px;
 }
 
 html, body {
@@ -127,7 +127,7 @@ h2, em {
     padding: 0;
     border: var(--border);
     border-radius: var(--borderRad);
-    background: var(--pink)
+    background: var(--white)
         url('data:image/svg+xml;charset=utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path d="M424.4 214.7L72.4 6.6C43.8-10.3 0 6.1 0 47.9V464c0 37.5 40.7 60.1 72.4 41.3l352-208c31.4-18.5 31.5-64.1 0-82.6z" fill="black" /></svg>')
         no-repeat center center;
     background-size: 60% 60%;
@@ -140,7 +140,7 @@ h2, em {
 
 #playBtn:hover,
 #playBtn:checked:hover {
-    background-color: var(--yellow);
+    background-color: var(--lime);
 }
 
 #playBtn:checked {
@@ -162,16 +162,17 @@ h2, em {
 
 .pads input {
     appearance: none;
-    width: 9vw;
-    height: 9vw;
-    min-width: 56px;
-    min-height: 56px;
-    max-width: 96px;
-    max-height: 96px;
+    width: 3vw;
+    height: 3vw;
+    min-width: 18px;
+    min-height: 18px;
+    max-width: 56px;
+    max-height: 56px;
     margin: 0;
     padding: 0;
     background-color: var(--white);
     border: var(--border);
+    border-radius: var(--borderRad);
 }
 
 .pads input:checked {

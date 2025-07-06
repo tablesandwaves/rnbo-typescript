@@ -31,8 +31,8 @@ export class StepSequencer {
   notesInQueue: queuedNote[] = [];
   timerID: NodeJS.Timeout | undefined;
   // Start at last note drawn so first time used it wraps back to index 0
-  // TODO: change to dynamic count of HTML .pads > input[type="checkbox"] elements.
-  lastNoteDrawn = 3;
+  lastNoteDrawn: number;
+  stepCount: number;
   isPlaying = false;
   devices: Device[] = [];
 
@@ -40,17 +40,19 @@ export class StepSequencer {
   constructor(audioContext: AudioContext, devices: Device[]) {
     this.audioContext = audioContext;
     this.devices      = devices;
-    this.pads         = document.querySelectorAll(".pads");
+
+    this.pads          = document.querySelectorAll(".pads");
+    this.stepCount     = document.querySelectorAll(".pads label").length / this.devices.length;
+    this.lastNoteDrawn = this.stepCount - 1;
   }
 
 
   nextNote() {
     const secondsPerBeat = 60.0 / this.tempo;
-
     this.nextNoteTime += secondsPerBeat; // Add beat length to last beat time
 
     // Advance the beat number, wrap to zero when reaching 4
-    this.currentNote = (this.currentNote + 1) % 4;
+    this.currentNote = (this.currentNote + 1) % this.stepCount;
   }
 
 
