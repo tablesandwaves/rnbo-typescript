@@ -25,6 +25,7 @@
     "typescript": "^5.8.3"
   },
   "dependencies": {
-    "@rnbo/js": "^1.4.0"
+    "@rnbo/js": "^1.4.0",
+    "tblswvs": "^0.21.1"
   }
 }

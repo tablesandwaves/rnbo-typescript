@@ -5,6 +5,7 @@
 
 import { type Device } from "@rnbo/js";
 import { playNote, updateParameters } from "./playback";
+import type { Key } from "tblswvs";
 
 
 type queuedNote = {
@@ -38,6 +39,8 @@ export class StepSequencer {
   isPlaying = false;
   // RNBO synth devices
   devices: Device[] = [];
+  // Key for the synths
+  key: Key | undefined;
 
 
   constructor(audioContext: AudioContext, devices: Device[]) {
@@ -67,7 +70,8 @@ export class StepSequencer {
       // Play first voice
       if (Math.random() > 0.5)
         updateParameters(this.devices[0]!);
-      const midiNoteNumber = Math.floor(Math.random() * 12) + 48;
+      const scaleDegree    = Math.floor(Math.random() * this.key!.mode.scaleOffsets.length) + 1;
+      const midiNoteNumber = this.key!.degree(scaleDegree).midi + 48;
       playNote(this.devices[0]!, midiNoteNumber);
     }
 
@@ -75,7 +79,8 @@ export class StepSequencer {
       // Play second voice
       if (Math.random() > 0.5)
         updateParameters(this.devices[1]!);
-      const midiNoteNumber = Math.floor(Math.random() * 12) + 48;
+      const scaleDegree    = Math.floor(Math.random() * this.key!.mode.scaleOffsets.length) + 1;
+      const midiNoteNumber = this.key!.degree(scaleDegree).midi + 48;
       playNote(this.devices[1]!, midiNoteNumber);
     }
   }

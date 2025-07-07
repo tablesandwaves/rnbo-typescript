@@ -1,13 +1,13 @@
 import { createDevice, type Device, type IPatcher, type Parameter } from "@rnbo/js";
 import { StepSequencer } from "./sequencer";
 import { playNote } from "./playback";
+import { Key, noteData, Scale } from "tblswvs";
 
 
 type SetupResponse = [context: AudioContext, devices: Device[]];
 
 
-const patcherExportURL = "export/simple-fm.export.json",
-      midiNotes        = [49, 52, 56, 63];
+const patcherExportURL = "export/simple-fm.export.json";
 
 let isDraggingSlider = false,
     sequencer: StepSequencer;
@@ -29,14 +29,44 @@ const setup = async (): Promise<SetupResponse> => {
     device.node.connect(outputNode);
 
     makeSliders(device, i);
-    makeMIDIKeyboard(device, i);
   });
 
   document.body.onclick = () => {
     context.resume();
   }
 
+  loadRootNoteSelector();
+  loadScaleSelector();
+
   return [context, [device1, device2]];
+}
+
+
+const loadScaleSelector = () => {
+  const scales = Object.values(Scale).filter(s => typeof s === "string" && s !== "GS").sort();
+  const scaleSelect = document.querySelector("#scale");
+  scales.forEach(scale => {
+    const option = document.createElement("option");
+    option.setAttribute("value", "" + scale);
+    option.innerText = "" + scale;
+    if (scale === "Minor") option.selected = true;
+    scaleSelect?.appendChild(option);
+  });
+
+  scaleSelect?.addEventListener("change", loadKey);
+}
+
+
+const loadRootNoteSelector = () => {
+  const rootNoteSelect = document.querySelector("#root-note");
+  noteData.slice(0, 12).forEach(note => {
+    const option = document.createElement("option");
+    option.setAttribute("value", note.note);
+    option.innerText = note.note;
+    rootNoteSelect?.appendChild(option);
+  });
+
+  rootNoteSelect?.addEventListener("change", loadKey);
 }
 
 
@@ -139,19 +169,35 @@ const generateParameterText = (param: Parameter, index: number) => {
 }
 
 
-const makeMIDIKeyboard = (device: Device, index: number) => {
-  midiNotes.forEach(midiNoteNumber => {
-    const key = document.createElement("div");
-    const label = document.createElement("p");
-    label.textContent = "" + midiNoteNumber;
-    key.appendChild(label);
-    key.addEventListener("pointerdown", () => {
-      playNote(device, midiNoteNumber);
-      key.classList.add("clicked");
+const loadKey = () => {
+  const tonic           = (document.querySelector("select#root-note") as HTMLSelectElement).value;
+  const scaleName       = (document.querySelector("select#scale") as HTMLSelectElement).value;
+  const scale           = Scale[scaleName as keyof typeof Scale];
+  const keyboardWrapper = document.querySelector("#scale-degree-keyboard");
+
+  document.querySelectorAll(".scale-button").forEach(div => div.parentElement?.removeChild(div));
+
+  sequencer.key = new Key(tonic, scale);
+  sequencer.key.mode.scaleOffsets.forEach((_, i) => {
+    const div = document.createElement("div");
+    div.classList.add("scale-button");
+    div.setAttribute("data-midi-number", "" + (sequencer.key!.midiTonic + i));
+    div.innerText = "" + (i + 1);
+    keyboardWrapper?.appendChild(div);
+  });
+
+  document.querySelectorAll(".scale-button").forEach(scaleButton => {
+    scaleButton.addEventListener("pointerdown", () => {
+      const deviceIndex = parseInt((document.querySelector("select#device-selector") as HTMLSelectElement).value);
+
+      const midiNoteNumber = scaleButton.getAttribute("data-midi-number");
+      if (midiNoteNumber) {
+        playNote(sequencer.devices[deviceIndex]!, parseInt(midiNoteNumber) + 48);
+        scaleButton.classList.add("clicked");
+      }
     });
 
-    key.addEventListener("pointerup", () => key.classList.remove("clicked"));
-    document.querySelector(`#synth-${index} .rnbo-clickable-keyboard`)!.appendChild(key);
+    scaleButton.addEventListener("pointerup", () => scaleButton.classList.remove("clicked"));
   });
 }
 
@@ -160,6 +206,7 @@ setup()
   .then((contextAndDevices: SetupResponse) => {
     const [context, devices] = contextAndDevices;
     sequencer = new StepSequencer(context, devices);
+    loadKey();
     document.querySelector("#playBtn")!.addEventListener("click", (event) => sequencer.togglePlayback(event));
   }).catch(error => {
     console.error(error.message);

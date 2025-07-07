@@ -25,9 +25,31 @@ html, body {
     padding: 0;
 }
 
-#wrapper {
+#wrapper, #scale-degree-keyboard {
     margin: auto;
     max-width: 1080px;
+}
+
+#scale-degree-keyboard {
+    width: 100%;
+    display: flex;
+    flex-wrap: wrap;
+    margin: 1em auto;
+}
+
+.scale-button {
+    margin: 2px;
+    border: solid black 1px;
+    min-height: 50px;
+    flex-grow: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.scale-button.clicked {
+    background: #222222;
+    color: #dddddd;
 }
 
 .synth {
@@ -45,26 +67,6 @@ html, body {
 
 h2, em {
     width: 100%;
-}
-
-.rnbo-clickable-keyboard {
-    display: flex;
-    flex-wrap: wrap;
-}
-
-.rnbo-clickable-keyboard > div {
-    margin: 2px;
-    border: solid black 1px;
-    min-height: 50px;
-    flex-grow: 1;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
-
-.rnbo-clickable-keyboard > div.clicked {
-    background: #222222;
-    color: #dddddd;
 }
 
 .rnbo-parameter-sliders {
