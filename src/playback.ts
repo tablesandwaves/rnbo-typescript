@@ -1,4 +1,4 @@
-import { MIDIEvent, TimeNow, type Device, type MIDIData } from "@rnbo/js";
+import { MIDIEvent, type Device, type MIDIData } from "@rnbo/js";
 
 
 const midiPort         = 0,
@@ -23,7 +23,7 @@ export const playNote = (device: Device, midiNoteNumber: number) => {
 
 
 export const updateParameters = (device: Device) => {
-  device.parametersById.get("modulator")!.value = Math.round(Math.random() * 100) / 10;
-  device.parametersById.get("carrier")!.value   = Math.round(Math.random() * 100) / 10;
-  device.parametersById.get("index")!.value     = Math.round(Math.random() * 200) / 10;
+  device.parametersById.get("modulator")!.value = Math.round(Math.random() * 3) + 1;
+  device.parametersById.get("carrier")!.value   = Math.round(Math.random() * 3) + 1;
+  device.parametersById.get("index")!.value     = Math.round(Math.random() * 50) / 10;
 }

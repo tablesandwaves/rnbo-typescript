@@ -71,7 +71,7 @@ export class StepSequencer {
       if (Math.random() > 0.5)
         updateParameters(this.devices[0]!);
       const scaleDegree    = Math.floor(Math.random() * this.key!.mode.scaleOffsets.length) + 1;
-      const midiNoteNumber = this.key!.degree(scaleDegree).midi + 48;
+      const midiNoteNumber = this.key!.degree(scaleDegree).midi + 36;
       playNote(this.devices[0]!, midiNoteNumber);
     }
 
@@ -80,7 +80,7 @@ export class StepSequencer {
       if (Math.random() > 0.5)
         updateParameters(this.devices[1]!);
       const scaleDegree    = Math.floor(Math.random() * this.key!.mode.scaleOffsets.length) + 1;
-      const midiNoteNumber = this.key!.degree(scaleDegree).midi + 48;
+      const midiNoteNumber = this.key!.degree(scaleDegree).midi + 36;
       playNote(this.devices[1]!, midiNoteNumber);
     }
   }
