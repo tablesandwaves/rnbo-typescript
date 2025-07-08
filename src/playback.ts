@@ -24,6 +24,6 @@ export const playNote = (device: Device, midiNoteNumber: number) => {
 
 export const updateParameters = (device: Device) => {
   device.parametersById.get("modulator")!.value = Math.round(Math.random() * 3) + 1;
-  device.parametersById.get("carrier")!.value   = Math.round(Math.random() * 3) + 1;
-  device.parametersById.get("index")!.value     = Math.round(Math.random() * 50) / 10;
+  device.parametersById.get("carrier")!.value   = Math.round(Math.random() * 10) + 1;
+  device.parametersById.get("index")!.value     = Math.round(Math.random() * 100) / 10;
 }

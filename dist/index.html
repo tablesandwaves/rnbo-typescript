@@ -43,8 +43,11 @@
 
   <div id="sequencer">
     <div id="transport">
+      <label for="playBtn" id="play-button-label">Play</label>
       <input type="checkbox" id="playBtn" />
-      <label for="playBtn">Play</label>
+      <label for="bpm">BPM</label>
+      <input type="range" name="bpm" id="bpm" min="20" max="200" value="120" step="1">
+      <span id="bpmval">120</span>
     </div>
 
     <section class="pads">

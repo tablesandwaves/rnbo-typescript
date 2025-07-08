@@ -16,7 +16,7 @@ type queuedNote = {
 
 export class StepSequencer {
   audioContext: AudioContext;
-  tempo = 240;
+  tempo = 120;
   // How frequently to call scheduling function (in milliseconds)
   lookahead = 25.0;
   // How far ahead to schedule audio (sec)
@@ -54,7 +54,7 @@ export class StepSequencer {
 
 
   nextNote() {
-    const secondsPerBeat = 60.0 / this.tempo;
+    const secondsPerBeat = 60.0 / this.tempo / 4;
     this.nextNoteTime += secondsPerBeat; // Add beat length to last beat time
 
     // Advance the beat number, wrap to zero when reaching 4
@@ -68,19 +68,19 @@ export class StepSequencer {
 
     if (this.pads[0]!.querySelectorAll("input")![beatNumber]!.checked) {
       // Play first voice
-      if (Math.random() > 0.5)
+      if (Math.random() > 0.7)
         updateParameters(this.devices[0]!);
       const scaleDegree    = Math.floor(Math.random() * this.key!.mode.scaleOffsets.length) + 1;
-      const midiNoteNumber = this.key!.degree(scaleDegree).midi + 36;
+      const midiNoteNumber = this.key!.degree(scaleDegree).midi;
       playNote(this.devices[0]!, midiNoteNumber);
     }
 
     if (this.pads[1]!.querySelectorAll("input")![beatNumber]!.checked) {
       // Play second voice
-      if (Math.random() > 0.5)
+      if (Math.random() > 0.3)
         updateParameters(this.devices[1]!);
       const scaleDegree    = Math.floor(Math.random() * this.key!.mode.scaleOffsets.length) + 1;
-      const midiNoteNumber = this.key!.degree(scaleDegree).midi + 36;
+      const midiNoteNumber = this.key!.degree(scaleDegree).midi;
       playNote(this.devices[1]!, midiNoteNumber);
     }
   }
