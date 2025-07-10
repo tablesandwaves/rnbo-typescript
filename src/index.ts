@@ -1,6 +1,5 @@
 import { createDevice, type IPatcher } from "@rnbo/js";
 import { StepSequencer } from "./sequencer";
-import { playNote } from "./playback";
 import { Key, noteData, Scale } from "tblswvs";
 import { Synth } from "./synth";
 
@@ -84,7 +83,7 @@ const loadKey = () => {
 
       const midiNoteNumber = scaleButton.getAttribute("data-midi-number");
       if (midiNoteNumber) {
-        playNote(sequencer.synths[deviceIndex]!, parseInt(midiNoteNumber) + 48);
+        sequencer.synths[deviceIndex]!.playNote(parseInt(midiNoteNumber) + 48);
         scaleButton.classList.add("clicked");
       }
     });

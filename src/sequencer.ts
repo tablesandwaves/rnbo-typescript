@@ -3,9 +3,7 @@
  * https://github.com/mdn/webaudio-examples/tree/main/step-sequencer
  */
 
-import { type Device } from "@rnbo/js";
 import { Synth } from "./synth";
-import { playNote, updateParameters } from "./playback";
 import type { Key } from "tblswvs";
 
 
@@ -70,19 +68,19 @@ export class StepSequencer {
     if (this.pads[0]!.querySelectorAll("input")![beatNumber]!.checked) {
       // Play first voice
       if (Math.random() > 0.7)
-        updateParameters(this.synths[0]!);
+        this.synths[0]!.updateParameters();
       const scaleDegree    = Math.floor(Math.random() * this.key!.mode.scaleOffsets.length) + 1;
       const midiNoteNumber = this.key!.degree(scaleDegree).midi;
-      playNote(this.synths[0]!, midiNoteNumber);
+      this.synths[0]!.playNote(midiNoteNumber);
     }
 
     if (this.pads[1]!.querySelectorAll("input")![beatNumber]!.checked) {
       // Play second voice
       if (Math.random() > 0.3)
-        updateParameters(this.synths[1]!);
+        this.synths[1]!.updateParameters();
       const scaleDegree    = Math.floor(Math.random() * this.key!.mode.scaleOffsets.length) + 1;
       const midiNoteNumber = this.key!.degree(scaleDegree).midi;
-      playNote(this.synths[1]!, midiNoteNumber);
+      this.synths[1]!.playNote(midiNoteNumber);
     }
   }
 
