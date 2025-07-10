@@ -4,6 +4,7 @@
  */
 
 import { type Device } from "@rnbo/js";
+import { Synth } from "./synth";
 import { playNote, updateParameters } from "./playback";
 import type { Key } from "tblswvs";
 
@@ -38,17 +39,17 @@ export class StepSequencer {
   // Keep track of play status
   isPlaying = false;
   // RNBO synth devices
-  devices: Device[] = [];
+  synths: Synth[] = [];
   // Key for the synths
   key: Key | undefined;
 
 
-  constructor(audioContext: AudioContext, devices: Device[]) {
+  constructor(audioContext: AudioContext, synths: Synth[]) {
     this.audioContext = audioContext;
-    this.devices      = devices;
+    this.synths       = synths;
 
     this.pads          = document.querySelectorAll(".pads");
-    this.stepCount     = document.querySelectorAll(".pads label").length / this.devices.length;
+    this.stepCount     = document.querySelectorAll(".pads label").length / this.synths.length;
     this.lastNoteDrawn = this.stepCount - 1;
   }
 
@@ -69,19 +70,19 @@ export class StepSequencer {
     if (this.pads[0]!.querySelectorAll("input")![beatNumber]!.checked) {
       // Play first voice
       if (Math.random() > 0.7)
-        updateParameters(this.devices[0]!);
+        updateParameters(this.synths[0]!);
       const scaleDegree    = Math.floor(Math.random() * this.key!.mode.scaleOffsets.length) + 1;
       const midiNoteNumber = this.key!.degree(scaleDegree).midi;
-      playNote(this.devices[0]!, midiNoteNumber);
+      playNote(this.synths[0]!, midiNoteNumber);
     }
 
     if (this.pads[1]!.querySelectorAll("input")![beatNumber]!.checked) {
       // Play second voice
       if (Math.random() > 0.3)
-        updateParameters(this.devices[1]!);
+        updateParameters(this.synths[1]!);
       const scaleDegree    = Math.floor(Math.random() * this.key!.mode.scaleOffsets.length) + 1;
       const midiNoteNumber = this.key!.degree(scaleDegree).midi;
-      playNote(this.devices[1]!, midiNoteNumber);
+      playNote(this.synths[1]!, midiNoteNumber);
     }
   }
 
