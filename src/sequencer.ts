@@ -12,6 +12,11 @@ type queuedNote = {
   time: number
 }
 
+export type SequencerConfiguration = [
+  context: AudioContext,
+  synths: Synth[]
+];
+
 
 export class StepSequencer {
   audioContext: AudioContext;
