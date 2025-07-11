@@ -86,7 +86,6 @@ export class StepSequencer {
     this.stepsInQueue.push({ index: stepIndex, time: time });
 
     if (this.sequence[0]![stepIndex]) {
-      // Play first voice
       if (Math.random() > 0.7)
         this.synths[0]!.updateParameters();
       const scaleDegree    = Math.floor(Math.random() * this.key!.mode.scaleOffsets.length) + 1;
@@ -95,7 +94,6 @@ export class StepSequencer {
     }
 
     if (this.sequence[1]![stepIndex]) {
-      // Play second voice
       if (Math.random() > 0.3)
         this.synths[1]!.updateParameters();
       const scaleDegree    = Math.floor(Math.random() * this.key!.mode.scaleOffsets.length) + 1;
@@ -118,24 +116,21 @@ export class StepSequencer {
   }
 
 
-  togglePlayback(event: Event) {
+  togglePlayback() {
     this.isPlaying = !this.isPlaying;
 
     // Start playing
     if (this.isPlaying) {
       // Check if context is in suspended state (autoplay policy)
-      if (this.audioContext.state === "suspended") {
+      if (this.audioContext.state === "suspended")
         this.audioContext.resume();
-      }
 
       this.currentStep = 0;
       this.nextStepTime = this.audioContext.currentTime;
       this.scheduler(this); // kick off scheduling
       requestAnimationFrame(() => draw(this)); // start the drawing loop.
-      (event.target as Element).setAttribute("data-playing", "true");
     } else {
       window.clearTimeout(this.timerID);
-      (event.target as Element).setAttribute("data-playing", "false");
     }
   }
 }

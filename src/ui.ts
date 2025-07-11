@@ -213,3 +213,8 @@ export const loadBpmControls = (sequencer: StepSequencer) => {
     (bpmValEl as HTMLElement)!.innerText = "" + sequencer.tempo;
   }, false);
 }
+
+
+export const loadPlaybackControl = (sequencer: StepSequencer) => {
+  document.querySelector("#playBtn")!.addEventListener("click", () => sequencer.togglePlayback());
+}
