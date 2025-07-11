@@ -1,6 +1,6 @@
 import { type Parameter } from "@rnbo/js";
 import { Key, noteData, Scale } from "tblswvs";
-import type { StepSequencer } from "./sequencer";
+import { StepSequencer } from "./sequencer";
 import type { Synth } from "./synth";
 
 
@@ -166,4 +166,40 @@ const generateParameterText = (param: Parameter, index: number) => {
   text.setAttribute("type", "text");
 
   return text;
+}
+
+
+// SEQUENCER
+
+// Draw function to update the UI, so we can see when the beat progress.
+// This is a loop: it reschedules itself to redraw at the end.
+export const draw = (sequencer: StepSequencer) => {
+  let step = sequencer.lastStep;
+  const currentTime = sequencer.audioContext.currentTime;
+
+  while (sequencer.stepsInQueue.length && sequencer.stepsInQueue[0]!.time < currentTime) {
+    step = sequencer.stepsInQueue[0]!.index;
+    sequencer.stepsInQueue.shift(); // Remove step from queue
+  }
+
+  // We only need to draw if the note has moved.
+  if (sequencer.lastStep !== step) {
+    document.querySelector(`#step-${sequencer.lastStep + 1}`)!.classList.remove("active");
+    document.querySelector(`#step-${step + 1}`)!.classList.add("active");
+    sequencer.lastStep = step;
+  }
+  // Set up to draw again
+  requestAnimationFrame(() => draw(sequencer));
+}
+
+
+export const loadSteps = (sequencer: StepSequencer) => {
+  document.querySelectorAll(".pads input[type=checkbox]").forEach((stepInput, i) => {
+    const voiceIndex = Math.floor(i / 8);
+    const stepIndex  = i % 8;
+
+    stepInput.addEventListener("change", () => {
+      sequencer.sequence[voiceIndex]![stepIndex] = (stepInput as HTMLInputElement).checked ? 1 : 0;
+    });
+  });
 }

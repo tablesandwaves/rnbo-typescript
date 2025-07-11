@@ -1,7 +1,7 @@
 import { createDevice, type IPatcher } from "@rnbo/js";
 import { StepSequencer, type SequencerConfiguration } from "./sequencer";
 import { Synth } from "./synth";
-import { loadRootNoteSelector, loadScaleSelector, loadKey } from "./ui";
+import { loadRootNoteSelector, loadScaleSelector, loadKey, loadSteps } from "./ui";
 
 
 const patcherExportURL = "export/simple-fm.export.json";
@@ -33,6 +33,7 @@ setup()
     loadKey(sequencer);
     loadRootNoteSelector(sequencer);
     loadScaleSelector(sequencer);
+    loadSteps(sequencer);
 
     document.querySelector("#playBtn")!.addEventListener("click", (event) => sequencer.togglePlayback(event));
 
