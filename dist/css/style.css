@@ -189,3 +189,21 @@ h2, em {
 .pads label {
     display: none;
 }
+
+#step-marker {
+    display: flex;
+    justify-content: space-between;
+}
+
+#step-marker span {
+    width: 3vw;
+    min-width: 18px;
+    min-height: 6px;
+    max-width: 56px;
+    max-height: 8px;
+    background-color: var(--green);
+}
+
+#step-marker span.active {
+    background-color: var(--yellow);
+}

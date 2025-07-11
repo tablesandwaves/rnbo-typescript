@@ -7,8 +7,8 @@ import { Synth } from "./synth";
 import type { Key } from "tblswvs";
 
 
-type queuedNote = {
-  note: number,
+type queuedStep = {
+  index: number,
   time: number
 }
 
@@ -26,17 +26,17 @@ export class StepSequencer {
   // How far ahead to schedule audio (sec)
   scheduleAheadTime = 0.1;
   // The note we are currently playing
-  currentNote = 0;
+  currentStep = 0;
   // When the next note is due
   nextNoteTime = 0.0;
   // UI elements that correspond to sequencer steps
   pads: NodeListOf<Element>;
   // Create a queue for the notes that are to be played, with the current time that we want them to play
-  notesInQueue: queuedNote[] = [];
+  stepsInQueue: queuedStep[] = [];
   // ID for clearing setTimeout() when sequencer stops
   timerID: NodeJS.Timeout | undefined;
   // Start at last note drawn so first time used it wraps back to index 0
-  lastNoteDrawn: number;
+  lastStep: number;
   // Number of steps in the loop
   stepCount: number;
   // Keep track of play status
@@ -51,9 +51,9 @@ export class StepSequencer {
     this.audioContext = audioContext;
     this.synths       = synths;
 
-    this.pads          = document.querySelectorAll(".pads");
-    this.stepCount     = document.querySelectorAll(".pads label").length / this.synths.length;
-    this.lastNoteDrawn = this.stepCount - 1;
+    this.pads      = document.querySelectorAll(".pads");
+    this.stepCount = document.querySelectorAll(".pads label").length / this.synths.length;
+    this.lastStep  = this.stepCount - 1;
   }
 
 
@@ -61,16 +61,16 @@ export class StepSequencer {
     const secondsPerBeat = 60.0 / this.tempo / 4;
     this.nextNoteTime += secondsPerBeat; // Add beat length to last beat time
 
-    // Advance the beat number, wrap to zero when reaching 4
-    this.currentNote = (this.currentNote + 1) % this.stepCount;
+    // Advance the beat number, wrap to zero when reaching the step count
+    this.currentStep = (this.currentStep + 1) % this.stepCount;
   }
 
 
-  scheduleNote(beatNumber: number, time: number) {
+  scheduleNote(stepIndex: number, time: number) {
     // Push the note into the queue, even if we're not playing.
-    this.notesInQueue.push({ note: beatNumber, time: time });
+    this.stepsInQueue.push({ index: stepIndex, time: time });
 
-    if (this.pads[0]!.querySelectorAll("input")![beatNumber]!.checked) {
+    if (this.pads[0]!.querySelectorAll("input")![stepIndex]!.checked) {
       // Play first voice
       if (Math.random() > 0.7)
         this.synths[0]!.updateParameters();
@@ -79,7 +79,7 @@ export class StepSequencer {
       this.synths[0]!.playNote(midiNoteNumber);
     }
 
-    if (this.pads[1]!.querySelectorAll("input")![beatNumber]!.checked) {
+    if (this.pads[1]!.querySelectorAll("input")![stepIndex]!.checked) {
       // Play second voice
       if (Math.random() > 0.3)
         this.synths[1]!.updateParameters();
@@ -94,7 +94,7 @@ export class StepSequencer {
   // schedule them and advance the pointer.
   scheduler(sequencer: StepSequencer) {
     while (sequencer.nextNoteTime < sequencer.audioContext.currentTime + sequencer.scheduleAheadTime) {
-      sequencer.scheduleNote(sequencer.currentNote, sequencer.nextNoteTime);
+      sequencer.scheduleNote(sequencer.currentStep, sequencer.nextNoteTime);
       sequencer.nextNote();
     }
     sequencer.timerID = setTimeout(() => {
@@ -106,24 +106,19 @@ export class StepSequencer {
   // Draw function to update the UI, so we can see when the beat progress.
   // This is a loop: it reschedules itself to redraw at the end.
   draw(sequencer: StepSequencer) {
-    let drawNote = sequencer.lastNoteDrawn;
+    let step = sequencer.lastStep;
     const currentTime = sequencer.audioContext.currentTime;
 
-    while (sequencer.notesInQueue.length && sequencer.notesInQueue[0]!.time < currentTime) {
-      drawNote = sequencer.notesInQueue[0]!.note;
-      sequencer.notesInQueue.shift(); // Remove note from queue
+    while (sequencer.stepsInQueue.length && sequencer.stepsInQueue[0]!.time < currentTime) {
+      step = sequencer.stepsInQueue[0]!.index;
+      sequencer.stepsInQueue.shift(); // Remove step from queue
     }
 
     // We only need to draw if the note has moved.
-    if (sequencer.lastNoteDrawn !== drawNote) {
-      sequencer.pads.forEach((pad) => {
-        pad.children[this.lastNoteDrawn * 2]!.setAttribute("style", "border-color: var(--black)");
-        // pad.children[this.lastNoteDrawn * 2]!.style.borderColor = "var(--black)";
-        pad.children[drawNote * 2]!.setAttribute("style", "border-color: var(--yellow)");
-        // pad.children[drawNote * 2]!.style.borderColor = "var(--yellow)";
-      });
-
-      sequencer.lastNoteDrawn = drawNote;
+    if (sequencer.lastStep !== step) {
+      document.querySelector(`#step-${sequencer.lastStep + 1}`)!.classList.remove("active");
+      document.querySelector(`#step-${step + 1}`)!.classList.add("active");
+      sequencer.lastStep = step;
     }
     // Set up to draw again
     requestAnimationFrame(() => sequencer.draw(sequencer));
@@ -140,7 +135,7 @@ export class StepSequencer {
         this.audioContext.resume();
       }
 
-      this.currentNote = 0;
+      this.currentStep = 0;
       this.nextNoteTime = this.audioContext.currentTime;
       this.scheduler(this); // kick off scheduling
       requestAnimationFrame(() => this.draw(this)); // start the drawing loop.
