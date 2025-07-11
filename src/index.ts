@@ -1,7 +1,7 @@
 import { createDevice, type IPatcher } from "@rnbo/js";
 import { StepSequencer, type SequencerConfiguration } from "./sequencer";
 import { Synth } from "./synth";
-import { loadRootNoteSelector, loadScaleSelector, loadKey, loadSteps } from "./ui";
+import { loadRootNoteSelector, loadScaleSelector, loadKey, loadSteps, loadBpmControls } from "./ui";
 
 
 const patcherExportURL = "export/simple-fm.export.json";
@@ -28,21 +28,17 @@ const setup = async (): Promise<SequencerConfiguration> => {
 
 setup()
   .then((sequencerConfig: SequencerConfiguration) => {
+
     sequencer = new StepSequencer(...sequencerConfig);
 
     loadKey(sequencer);
     loadRootNoteSelector(sequencer);
     loadScaleSelector(sequencer);
     loadSteps(sequencer);
+    loadBpmControls(sequencer);
 
     document.querySelector("#playBtn")!.addEventListener("click", (event) => sequencer.togglePlayback(event));
 
-    const bpmControl = document.querySelector("#bpm");
-    const bpmValEl = document.querySelector("#bpmval");
-    bpmControl!.addEventListener("input", (ev) => {
-      sequencer.tempo = parseFloat((ev.target as HTMLInputElement)!.value);
-      (bpmValEl as HTMLElement)!.innerText = "" + sequencer.tempo;
-    }, false);
   }).catch(error => {
     console.error(error.message);
   });

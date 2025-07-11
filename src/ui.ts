@@ -203,3 +203,13 @@ export const loadSteps = (sequencer: StepSequencer) => {
     });
   });
 }
+
+
+export const loadBpmControls = (sequencer: StepSequencer) => {
+  const bpmControl = document.querySelector("#bpm");
+  const bpmValEl = document.querySelector("#bpmval");
+  bpmControl!.addEventListener("input", (ev) => {
+    sequencer.tempo = parseFloat((ev.target as HTMLInputElement)!.value);
+    (bpmValEl as HTMLElement)!.innerText = "" + sequencer.tempo;
+  }, false);
+}
