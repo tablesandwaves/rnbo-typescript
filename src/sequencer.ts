@@ -28,17 +28,17 @@ export class StepSequencer {
   lookahead = 25.0;
   // How far ahead to schedule audio (sec)
   scheduleAheadTime = 0.1;
-  // The note we are currently playing
+  // The step we are currently playing
   currentStep = 0;
-  // When the next note is due
+  // When the next step is due
   nextStepTime = 0.0;
   // Sequencer steps as an array of gates
   sequence: (0|1)[][] = new Array();
-  // Create a queue for the notes that are to be played, with the current time that we want them to play
+  // Create a queue for the steps that are to be played, with the current time that we want them to play
   stepsInQueue: queuedStep[] = [];
   // ID for clearing setTimeout() when sequencer stops
   timerID: NodeJS.Timeout | undefined;
-  // Start at last note drawn so first time used it wraps back to index 0
+  // Start at last step drawn so first time used it wraps back to index 0
   lastStep: number;
   // Number of steps in the loop
   stepCount: number;
@@ -73,7 +73,7 @@ export class StepSequencer {
   }
 
 
-  nextNote() {
+  nextStep() {
     // Add beat length to last beat time
     this.nextStepTime += this.#secondsPerStep;
     // Advance the beat number, wrap to zero when reaching the step count
@@ -81,8 +81,8 @@ export class StepSequencer {
   }
 
 
-  scheduleNote(stepIndex: number, time: number) {
-    // Push the note into the queue, even if we're not playing.
+  scheduleStep(stepIndex: number, time: number) {
+    // Push the step into the queue, even if we're not playing.
     this.stepsInQueue.push({ index: stepIndex, time: time });
 
     if (this.sequence[0]![stepIndex]) {
@@ -105,12 +105,12 @@ export class StepSequencer {
   }
 
 
-  // While there are notes that will need to play before the next interval,
+  // While there are steps that will need to play before the next interval,
   // schedule them and advance the pointer.
   scheduler(sequencer: StepSequencer) {
     while (sequencer.nextStepTime < sequencer.audioContext.currentTime + sequencer.scheduleAheadTime) {
-      sequencer.scheduleNote(sequencer.currentStep, sequencer.nextStepTime);
-      sequencer.nextNote();
+      sequencer.scheduleStep(sequencer.currentStep, sequencer.nextStepTime);
+      sequencer.nextStep();
     }
     sequencer.timerID = setTimeout(() => {
       sequencer.scheduler(sequencer);
