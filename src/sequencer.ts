@@ -50,12 +50,11 @@ export class StepSequencer {
   key: Key | undefined;
 
 
-  constructor(audioContext: AudioContext, synths: Synth[]) {
+  constructor(audioContext: AudioContext, synths: Synth[], stepCount: number) {
     this.audioContext = audioContext;
     this.synths       = synths;
-
-    this.stepCount = document.querySelectorAll(".pads label").length / this.synths.length;
-    this.lastStep  = this.stepCount - 1;
+    this.stepCount    = stepCount;
+    this.lastStep     = this.stepCount - 1;
 
     for (let voice = 0; voice < this.synths.length; voice++)
       this.sequence[voice] = new Array(this.stepCount).fill(0);

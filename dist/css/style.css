@@ -162,12 +162,12 @@ h2, em {
     margin: 1em auto;
 }
 
-.pads {
+.voice-steps {
     display: flex;
     justify-content: space-between;
 }
 
-.pads input {
+.voice-steps input {
     appearance: none;
     width: 3vw;
     height: 3vw;
@@ -182,20 +182,20 @@ h2, em {
     border-radius: var(--borderRad);
 }
 
-.pads input:checked {
+.voice-steps input:checked {
     background-color: var(--boxHigh);
 }
 
-.pads label {
+.voice-steps label {
     display: none;
 }
 
-#step-marker {
+#step-markers {
     display: flex;
     justify-content: space-between;
 }
 
-#step-marker span {
+#step-markers span {
     width: 3vw;
     min-width: 18px;
     min-height: 6px;
@@ -204,6 +204,6 @@ h2, em {
     background-color: var(--green);
 }
 
-#step-marker span.active {
+#step-markers span.active {
     background-color: var(--yellow);
 }

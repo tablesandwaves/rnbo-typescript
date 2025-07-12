@@ -184,8 +184,8 @@ export const draw = (sequencer: StepSequencer) => {
 
   // We only need to draw if the note has moved.
   if (sequencer.lastStep !== step) {
-    document.querySelector(`#step-${sequencer.lastStep + 1}`)!.classList.remove("active");
-    document.querySelector(`#step-${step + 1}`)!.classList.add("active");
+    document.querySelector(`#step-${sequencer.lastStep}`)!.classList.remove("active");
+    document.querySelector(`#step-${step}`)!.classList.add("active");
     sequencer.lastStep = step;
   }
   // Set up to draw again
@@ -193,14 +193,33 @@ export const draw = (sequencer: StepSequencer) => {
 }
 
 
-export const loadSteps = (sequencer: StepSequencer) => {
-  document.querySelectorAll(".pads input[type=checkbox]").forEach((stepInput, i) => {
-    const voiceIndex = Math.floor(i / 8);
-    const stepIndex  = i % 8;
+export const loadSteps = (sequencer: StepSequencer, stepCount: number) => {
+  const stepMarkers = document.querySelector("section#step-markers");
 
-    stepInput.addEventListener("change", () => {
-      sequencer.sequence[voiceIndex]![stepIndex] = (stepInput as HTMLInputElement).checked ? 1 : 0;
-    });
+  document.querySelectorAll("section.voice-steps").forEach((padGroup, voiceIndex) => {
+    for (let stepIndex = 0; stepIndex < stepCount; stepIndex++) {
+      const input = document.createElement("input");
+      input.setAttribute("type", "checkbox");
+      input.setAttribute("id", `voice-${voiceIndex}-step-${stepIndex}`)
+      input.addEventListener("change", () => {
+        sequencer.sequence[voiceIndex]![stepIndex] = input.checked ? 1 : 0;
+      });
+
+      const label = document.createElement("label");
+      label.setAttribute("for", `voice-${voiceIndex}-step-${stepIndex}`);
+      label.textContent = `Voice ${voiceIndex}, Step ${stepIndex}`;
+
+      padGroup.appendChild(input);
+      padGroup.appendChild(label);
+
+      if (voiceIndex == 0) {
+        const stepMarker = document.createElement("span");
+        stepMarker.setAttribute("class", "step");
+        stepMarker.setAttribute("id", `step-${stepIndex}`);
+
+        stepMarkers?.appendChild(stepMarker);
+      }
+    }
   });
 }
 

@@ -5,7 +5,6 @@ import * as ui from "./ui";
 
 
 const patcherExportURL = "export/simple-fm.export.json";
-let sequencer: StepSequencer;
 
 
 const setup = async (): Promise<SequencerConfiguration> => {
@@ -29,12 +28,13 @@ const setup = async (): Promise<SequencerConfiguration> => {
 setup()
   .then((sequencerConfig: SequencerConfiguration) => {
 
-    sequencer = new StepSequencer(...sequencerConfig);
+    const stepCount = parseInt((document.querySelector("input#steps") as HTMLInputElement).value);
+    const sequencer = new StepSequencer(...sequencerConfig, stepCount);
 
     ui.loadKey(sequencer);
     ui.loadRootNoteSelector(sequencer);
     ui.loadScaleSelector(sequencer);
-    ui.loadSteps(sequencer);
+    ui.loadSteps(sequencer, stepCount);
     ui.loadBpmControls(sequencer);
     ui.loadPlaybackControl(sequencer);
 
