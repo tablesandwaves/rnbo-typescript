@@ -32,7 +32,7 @@ html, body {
 
 #wrapper, #scale-degree-keyboard {
     margin: auto;
-    max-width: 1080px;
+    width: 1080px;
 }
 
 #scale-degree-keyboard {
@@ -55,6 +55,10 @@ html, body {
 .scale-button.clicked {
     background: #222222;
     color: #dddddd;
+}
+
+#synths {
+    width: 100%;
 }
 
 .synth {
@@ -142,12 +146,8 @@ h2, em {
 
 #playBtn {
     appearance: none;
-    width: 9vw;
-    height: 6vw;
-    min-width: 36px;
-    min-height: 36px;
-    max-width: 112px;
-    max-height: 64x;
+    width: 90px;
+    height: 60px;
     margin: 0;
     padding: 0;
     border: var(--border);
@@ -176,7 +176,7 @@ h2, em {
 }
 
 #sequencer #transport #parameters {
-    width: 100%;
+    width: 75%;
     display: block;
     float: left;
 }
@@ -213,12 +213,8 @@ h2, em {
 
 .voice-steps input {
     appearance: none;
-    width: 3vw;
-    height: 3vw;
-    min-width: 18px;
-    min-height: 18px;
-    max-width: 56px;
-    max-height: 56px;
+    width: 36px;
+    height: 36px;
     margin: 0;
     padding: 0;
     background-color: var(--white);
@@ -248,11 +244,8 @@ h2, em {
 }
 
 #step-markers span {
-    width: 3vw;
-    min-width: 18px;
-    min-height: 6px;
-    max-width: 56px;
-    max-height: 8px;
+    width: 36px;
+    height: 5px;
     background-color: var(--gray);
 }
 
