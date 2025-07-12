@@ -42,16 +42,22 @@
   </div>
 
   <div id="sequencer">
-    <div id="transport">
-      <label for="playBtn" id="play-button-label">Play</label>
-      <input type="checkbox" id="playBtn" />
-      <label for="bpm">BPM</label>
-      <input type="range" name="bpm" id="bpm" min="20" max="200" value="120" step="1">
-      <span id="bpmval">120</span>
-      <label for="steps">Steps</label>
-      <input type="range" name="steps" id="steps" min="2" max="16" value="8" step="1">
-      <span id="step-val">8</span>
-    </div>
+    <section id="transport">
+      <div id="playback">
+        <label for="playBtn" id="play-button-label">Play</label>
+        <input type="checkbox" id="playBtn" />
+      </div>
+
+      <div id="parameters">
+        <label for="bpm">BPM</label>
+        <input type="range" name="bpm" id="bpm" min="20" max="200" value="120" step="1">
+        <span id="bpmval">120</span>
+
+        <label for="steps">Steps</label>
+        <input type="range" name="steps" id="steps" min="2" max="16" value="8" step="1">
+        <span id="step-val">8</span>
+      </div>
+    </section>
 
     <section class="voice-steps"></section>
     <section class="voice-steps"></section>

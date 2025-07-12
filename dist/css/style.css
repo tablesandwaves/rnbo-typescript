@@ -10,12 +10,17 @@
   --cyan: hsla(195, 98%, 55%, 1);
   --white: hsla(0, 0%, 95%, 1);
   --black: hsla(0, 0%, 10%, 1);
+  --gray: hsla(0, 0%, 60%, 1);
+  --lightGray: hsla(0, 0%, 80%, 1);
 
   /* abstract our colours */
   --boxMain: var(--pink);
   --boxSecond: var(--purple);
-  --boxHigh: var(--yellow);
+  --boxHighlightEnabled: var(--yellow);
+  --boxHighlightDisabled: var(--lightGray);
   --border: 3px solid var(--black);
+  --disabledBorder: 3px solid var(--gray);
+  --enabledBorder: 3px solid var(--black);
   --borderRad: 4px;
 }
 
@@ -105,8 +110,26 @@ h2, em {
     margin: 2em auto;
 }
 
+#sequencer section {
+    width: 720px;
+    margin: 1em auto;
+    clear: left;
+}
+
 #sequencer #transport {
     text-align: center;
+    margin-bottom: 2em;
+    display: flex;
+}
+
+#sequencer #transport #playback {
+    float: left;
+    width: 25%;
+}
+
+#sequencer #transport #parameters {
+    float: left;
+    width: 75%;
 }
 
 #playBtn:checked {
@@ -152,14 +175,35 @@ h2, em {
     background-size: 60% 60%;
 }
 
+#sequencer #transport #parameters {
+    width: 100%;
+    display: block;
+    float: left;
+}
+
+#sequencer #transport #parameters label,
+#sequencer #transport #parameters input,
+#sequencer #transport #parameters span {
+    display: block;
+    float: left;
+    margin: 5px auto;
+}
+
+#sequencer #transport #parameters label {
+    width: 25%;
+}
+
+#sequencer #transport #parameters input {
+    width: 50%;
+}
+
+#sequencer #transport #parameters span {
+    width: 24%;
+}
+
 #bpm {
     width: 270px;
     vertical-align: middle;
-}
-
-#sequencer section {
-    width: 540px;
-    margin: 1em auto;
 }
 
 .voice-steps {
@@ -178,12 +222,20 @@ h2, em {
     margin: 0;
     padding: 0;
     background-color: var(--white);
-    border: var(--border);
+    border: var(--disabledBorder);
     border-radius: var(--borderRad);
 }
 
+.voice-steps input.enabled {
+    border: var(--enabledBorder);
+}
+
+.voice-steps input.enabled:checked {
+    background-color: var(--boxHighlightEnabled);
+}
+
 .voice-steps input:checked {
-    background-color: var(--boxHigh);
+    background-color: var(--boxHighlightDisabled);
 }
 
 .voice-steps label {
@@ -201,6 +253,10 @@ h2, em {
     min-height: 6px;
     max-width: 56px;
     max-height: 8px;
+    background-color: var(--gray);
+}
+
+#step-markers span.enabled {
     background-color: var(--green);
 }
 

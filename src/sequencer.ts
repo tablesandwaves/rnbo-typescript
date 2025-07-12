@@ -41,7 +41,7 @@ export class StepSequencer {
   // Start at last step drawn so first time used it wraps back to index 0
   lastStep: number;
   // Number of steps in the loop
-  stepCount: number;
+  #stepCount: number;
   // Keep track of play status
   isPlaying = false;
   // RNBO synth devices
@@ -53,11 +53,11 @@ export class StepSequencer {
   constructor(audioContext: AudioContext, synths: Synth[], stepCount: number) {
     this.audioContext = audioContext;
     this.synths       = synths;
-    this.stepCount    = stepCount;
-    this.lastStep     = this.stepCount - 1;
+    this.#stepCount   = stepCount;
+    this.lastStep     = this.#stepCount - 1;
 
     for (let voice = 0; voice < this.synths.length; voice++)
-      this.sequence[voice] = new Array(this.stepCount).fill(0);
+      this.sequence[voice] = new Array(16).fill(0);
   }
 
 
@@ -72,11 +72,19 @@ export class StepSequencer {
   }
 
 
+  set stepCount(stepCount: number) {
+    this.#stepCount = stepCount;
+
+    if (this.lastStep > this.#stepCount - 1)
+      this.lastStep = 0;
+  }
+
+
   nextStep() {
     // Add beat length to last beat time
     this.nextStepTime += this.#secondsPerStep;
     // Advance the beat number, wrap to zero when reaching the step count
-    this.currentStep = (this.currentStep + 1) % this.stepCount;
+    this.currentStep = (this.currentStep + 1) % this.#stepCount;
   }
 
 

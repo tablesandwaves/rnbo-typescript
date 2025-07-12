@@ -171,6 +171,8 @@ const generateParameterText = (param: Parameter, index: number) => {
 
 // SEQUENCER
 
+const MAX_STEP_COUNT = 16;
+
 // Draw function to update the UI, so we can see when the beat progress.
 // This is a loop: it reschedules itself to redraw at the end.
 export const draw = (sequencer: StepSequencer) => {
@@ -197,13 +199,14 @@ export const loadSteps = (sequencer: StepSequencer, stepCount: number) => {
   const stepMarkers = document.querySelector("section#step-markers");
 
   document.querySelectorAll("section.voice-steps").forEach((padGroup, voiceIndex) => {
-    for (let stepIndex = 0; stepIndex < stepCount; stepIndex++) {
+    for (let stepIndex = 0; stepIndex < MAX_STEP_COUNT; stepIndex++) {
       const input = document.createElement("input");
       input.setAttribute("type", "checkbox");
-      input.setAttribute("id", `voice-${voiceIndex}-step-${stepIndex}`)
-      input.addEventListener("change", () => {
-        sequencer.sequence[voiceIndex]![stepIndex] = input.checked ? 1 : 0;
-      });
+      input.setAttribute("id", `voice-${voiceIndex}-step-${stepIndex}`);
+      if (stepIndex < stepCount) input.classList.add("enabled");
+
+      input.addEventListener("change", () =>
+        sequencer.sequence[voiceIndex]![stepIndex] = input.checked ? 1 : 0);
 
       const label = document.createElement("label");
       label.setAttribute("for", `voice-${voiceIndex}-step-${stepIndex}`);
@@ -212,10 +215,11 @@ export const loadSteps = (sequencer: StepSequencer, stepCount: number) => {
       padGroup.appendChild(input);
       padGroup.appendChild(label);
 
-      if (voiceIndex == 0) {
+      if (voiceIndex === 0) {
         const stepMarker = document.createElement("span");
         stepMarker.setAttribute("class", "step");
         stepMarker.setAttribute("id", `step-${stepIndex}`);
+        if (stepIndex < stepCount) stepMarker.classList.add("enabled")
 
         stepMarkers?.appendChild(stepMarker);
       }
@@ -236,4 +240,36 @@ export const loadBpmControls = (sequencer: StepSequencer) => {
 
 export const loadPlaybackControl = (sequencer: StepSequencer) => {
   document.querySelector("#playBtn")!.addEventListener("click", () => sequencer.togglePlayback());
+}
+
+
+export const watchStepCounts = (sequencer: StepSequencer) => {
+  document.querySelector("input#steps")?.addEventListener("change", (event) => {
+    if (event.target !== null) {
+      const stepCount = parseInt((event.target as HTMLInputElement).value);
+      sequencer.stepCount = stepCount;
+      updateSteps(stepCount);
+
+      document.querySelector("#step-val")!.textContent = "" + stepCount;
+    }
+  });
+}
+
+
+const updateSteps = (stepCount: number) => {
+  document.querySelectorAll("section.voice-steps").forEach((padGroup, voiceIndex) => {
+    for (let stepIndex = 0; stepIndex < MAX_STEP_COUNT; stepIndex++) {
+      const input = document.querySelector(`#voice-${voiceIndex}-step-${stepIndex}`);
+      if (input)
+        stepIndex < stepCount ?
+        input.classList.add("enabled") :
+        input.classList.remove("enabled");
+
+      const span = document.querySelector(`#step-${stepIndex}`);
+      if (span)
+        stepIndex < stepCount ?
+        span.classList.add("enabled") :
+        span.classList.remove("enabled");
+    }
+  });
 }

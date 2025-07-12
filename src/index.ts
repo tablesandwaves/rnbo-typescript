@@ -36,6 +36,7 @@ setup()
     ui.loadScaleSelector(sequencer);
     ui.loadSteps(sequencer, stepCount);
     ui.loadBpmControls(sequencer);
+    ui.watchStepCounts(sequencer);
     ui.loadPlaybackControl(sequencer);
 
   }).catch(error => {
