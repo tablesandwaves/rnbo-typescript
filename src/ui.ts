@@ -44,11 +44,15 @@ export const loadKey = (sequencer: StepSequencer) => {
   document.querySelectorAll(".scale-button").forEach(div => div.parentElement?.removeChild(div));
 
   sequencer.key = new Key(tonic, scale);
-  sequencer.key.mode.scaleOffsets.forEach((_, i) => {
+
+  const numScaleDegrees = sequencer.key.mode.scaleOffsets.length;
+  const scaleDegrees    = [...new Array(numScaleDegrees + 1).keys()].map(i => i + 1);
+
+  scaleDegrees.forEach(degree => {
     const div = document.createElement("div");
     div.classList.add("scale-button");
-    div.setAttribute("data-midi-number", "" + (sequencer.key!.midiTonic + i));
-    div.innerText = "" + (i + 1);
+    div.setAttribute("data-midi-number", "" + sequencer.key!.degree(degree).midi);
+    div.innerText = "" + (degree === scaleDegrees.length ? 1 : degree);
     keyboardWrapper?.appendChild(div);
   });
 
@@ -58,7 +62,7 @@ export const loadKey = (sequencer: StepSequencer) => {
 
       const midiNoteNumber = scaleButton.getAttribute("data-midi-number");
       if (midiNoteNumber) {
-        sequencer.synths[deviceIndex]!.playNote(parseInt(midiNoteNumber) + 48);
+        sequencer.synths[deviceIndex]!.playNote(parseInt(midiNoteNumber) + 12);
         scaleButton.classList.add("clicked");
       }
     });
