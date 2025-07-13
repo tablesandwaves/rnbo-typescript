@@ -5,7 +5,7 @@
 
 import { Synth } from "./synth";
 import type { Key } from "tblswvs";
-import { draw } from "./ui";
+import { draw } from "../view/sequencer";
 
 
 type queuedStep = {

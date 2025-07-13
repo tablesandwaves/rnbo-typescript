@@ -1,5 +1,5 @@
 import { MIDIEvent, type Device, type Parameter, type MIDIData } from "@rnbo/js";
-import { makeSliders } from "./ui";
+import { makeSliders } from "../view/synth";
 
 
 const midiPort         = 0,

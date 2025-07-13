@@ -1,7 +1,7 @@
 import { createDevice, type IPatcher } from "@rnbo/js";
-import { StepSequencer, type SequencerConfiguration } from "./sequencer";
-import { Synth } from "./synth";
-import * as ui from "./ui";
+import { StepSequencer, type SequencerConfiguration } from "../model/sequencer";
+import { Synth } from "../model/synth";
+import * as sequencerUI from "../view/sequencer";
 
 
 const patcherExportURL = "export/simple-fm.export.json";
@@ -31,13 +31,13 @@ setup()
     const stepCount = parseInt((document.querySelector("input#steps") as HTMLInputElement).value);
     const sequencer = new StepSequencer(...sequencerConfig, stepCount);
 
-    ui.loadKey(sequencer);
-    ui.loadRootNoteSelector(sequencer);
-    ui.loadScaleSelector(sequencer);
-    ui.loadSteps(sequencer, stepCount);
-    ui.loadBpmControls(sequencer);
-    ui.watchStepCounts(sequencer);
-    ui.loadPlaybackControl(sequencer);
+    sequencerUI.loadKey(sequencer);
+    sequencerUI.loadRootNoteSelector(sequencer);
+    sequencerUI.loadScaleSelector(sequencer);
+    sequencerUI.loadSteps(sequencer, stepCount);
+    sequencerUI.loadBpmControls(sequencer);
+    sequencerUI.watchStepCounts(sequencer);
+    sequencerUI.loadPlaybackControl(sequencer);
 
   }).catch(error => {
     console.error(error.message);

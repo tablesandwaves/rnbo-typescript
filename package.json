@@ -9,12 +9,12 @@
   "license": "MIT",
   "author": "Steve Meyer",
   "type": "module",
-  "main": "src/index.ts ",
+  "main": "app/controller/index.ts ",
   "scripts": {
     "lint": "tsc",
-    "build": "esbuild src/index.ts --bundle --platform=node --outfile=dist/js/main.js --format=esm",
+    "build": "esbuild app/controller/index.ts --bundle --platform=node --outfile=dist/js/main.js --format=esm",
     "dev:tsc": "tsc --watch --preserveWatchOutput",
-    "dev:esbuild": "esbuild --watch src/index.ts --bundle --platform=node --outfile=dist/js/main.js",
+    "dev:esbuild": "esbuild --watch app/controller/index.ts --bundle --platform=node --outfile=dist/js/main.js",
     "dev": "npm-run-all --parallel dev:*",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
