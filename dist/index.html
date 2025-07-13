@@ -13,13 +13,40 @@
     <h1 id="patcher-title">Simple FM Duet</h1>
   </div>
 
-  <div id="global-controls">
+  <div id="sequencer">
+    <section id="transport">
+      <div id="playback">
+        <label for="playBtn" id="play-button-label">Play</label>
+        <input type="checkbox" id="playBtn" />
+      </div>
+
+      <div id="parameters">
+        <label for="bpm">BPM</label>
+        <input type="range" name="bpm" id="bpm" min="20" max="200" value="120" step="1">
+        <span id="bpmval">120</span>
+
+        <label for="steps">Steps</label>
+        <input type="range" name="steps" id="steps" min="2" max="16" value="8" step="1">
+        <span id="step-val">8</span>
+      </div>
+
+      <div id="scales">
+        <label for="root-note">Root Note</label>
+        <select name="root-note" id="root-note"></select>
+        <br>
+        <label for="scale">Scale</label>
+        <select name="scale" id="scale"></select>
+      </div>
+    </section>
+
+    <section class="voice-steps"></section>
+    <section class="voice-steps"></section>
+    <section id="step-markers"></section>
+  </div>
+
+  <div id="keyboard">
     <h2>Scale Degree Keyboard</h2>
-    <div id="tonic-scale">
-      Root Note
-      <select name="root-note" id="root-note"></select>
-      Scale
-      <select name="scale" id="scale"></select>
+    <div id="voice-selector">
       Voice
       <select name="device-selector" id="device-selector">
         <option value="0">One</option>
@@ -41,29 +68,6 @@
         <h2>Voice 2</h2>
       </div>
     </div>
-  </div>
-
-  <div id="sequencer">
-    <section id="transport">
-      <div id="playback">
-        <label for="playBtn" id="play-button-label">Play</label>
-        <input type="checkbox" id="playBtn" />
-      </div>
-
-      <div id="parameters">
-        <label for="bpm">BPM</label>
-        <input type="range" name="bpm" id="bpm" min="20" max="200" value="120" step="1">
-        <span id="bpmval">120</span>
-
-        <label for="steps">Steps</label>
-        <input type="range" name="steps" id="steps" min="2" max="16" value="8" step="1">
-        <span id="step-val">8</span>
-      </div>
-    </section>
-
-    <section class="voice-steps"></section>
-    <section class="voice-steps"></section>
-    <section id="step-markers"></section>
   </div>
 </div>
 
