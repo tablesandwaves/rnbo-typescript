@@ -4,7 +4,14 @@ An example app for RNBO + Typescript that has a simple two synth sequencer.
 
 ## About
 
-This library serves as a reference implementation for working with RNBO and Typescript. It builds a Web Audio app that uses [Cycling 74](https://cycling74.com/)'s RNBO Web export target.
+This codebase serves as a reference implementation for working with RNBO and Typescript. It builds a Web Audio app that uses [Cycling 74](https://cycling74.com/)'s RNBO Web export target. The app does not do much, but it demonstrates a few things:
+
+* Loading and playing multiple instances of a RNBO patcher
+* A complete Typescript app using RNBO
+
+The RNBO patcher functionality is based on Cycling 74's [JavaScript tutorial for RNBO](https://rnbo.cycling74.com/learn/getting-the-rnbojs-library).
+
+The sequencer is an adaptation the Mozilla Developer Network [Step Sequencer example](https://github.com/mdn/webaudio-examples/tree/main/step-sequencer) for Web Audio.
 
 ### RNBO Patcher
 
@@ -63,3 +70,13 @@ This Node.js app uses the following libraries.
 * typescript - it's Typescript code
 * esbuild - dev dependency for building
 * npm-run-all - dev dependency for build on save (my concern)
+
+## Code Structure
+
+This app is organized using the Model-View-Controller design pattern. Objects that store state, the `StepSequencer` and the `Synth`, are model objects. All dynamic UI elements created with JavaScript are implemented as functions within the `app/view/` path.
+
+The state based objects are implemented using JavaScript classes. The `StepSequencer` and `Synth` classes are found in the `app/model/` path.
+
+View code is implemented as standalone functions. Since the functions do not need to persist state they are not encapsulated in classes. Their purpose is to load and respond to UI interaction (JS Events) and as such they implement immediate updates to the HTML DOM.
+
+This app has a single page, so there is only an index controller. Its job is simply to load the RNBO patcher file from which it creates the `Synth`s' devices and then load the `StepSequencer` and finally setup all user interface interactions.
