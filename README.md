@@ -44,8 +44,6 @@ The sequencer will play random notes for each active step. Each row of sequencer
 * Respond to the scale degree keyboard
 * Adjust synthesizer parameters
 
-
-
 ### Installation
 
 From the root directory:
@@ -77,6 +75,6 @@ This app is organized using the Model-View-Controller design pattern. Objects th
 
 The state based objects are implemented using JavaScript classes. The `StepSequencer` and `Synth` classes are found in the `app/model/` path.
 
-View code is implemented as standalone functions. Since the functions do not need to persist state they are not encapsulated in classes. Their purpose is to load and respond to UI interaction (JS Events) and as such they implement immediate updates to the HTML DOM.
+View code is implemented as standalone functions. Since the functions do not need to persist state they are not encapsulated in classes. Their purpose is to load and respond to UI interaction (JS Events) and as such they only implement immediate updates to the HTML DOM.
 
 This app has a single page, so there is only an index controller. Its job is simply to load the RNBO patcher file from which it creates the `Synth`s' devices and then load the `StepSequencer` and finally setup all user interface interactions.
